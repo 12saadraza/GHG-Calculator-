@@ -191,6 +191,50 @@ footer {
             document.getElementById('netCarbonFootprintReport').textContent = localStorage.getItem('netCarbonFootprint') || '0.00 kg CO2';
         }
         window.onload = displayResults;
+        // Updated JavaScript
+
+// Function to retrieve and send emission data to backend
+function sendResultsToBackend() {
+    const data = {
+        totalVehicleEmissions: localStorage.getItem('totalVehicleEmissions') || '0.00 kg CO2',
+        totalGeneratorEmissions: localStorage.getItem('totalGeneratorEmissions') || '0.00 kg CO2',
+        totalPlantAbsorption: localStorage.getItem('totalPlantAbsorption') || '0.00 kg CO2',
+        totalElectricityEmissions: localStorage.getItem('totalElectricityEmissions') || '0.00 kg CO2',
+        totalGasEmissions: localStorage.getItem('totalGasEmissions') || '0.00 kg CO2',
+        totalWasteEmissions: localStorage.getItem('totalWasteEmissions') || '0.00 kg CO2',
+        netCarbonFootprint: localStorage.getItem('netCarbonFootprint') || '0.00 kg CO2'
+    };
+
+    fetch('http://localhost:5000/save-emission', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(data => console.log('Data saved:', data))
+    .catch(error => console.error('Error:', error));
+}
+
+// Print function
+function printReport() {
+    window.print();
+}
+
+// Add print button dynamically
+const printButton = document.createElement('button');
+printButton.textContent = 'Print Report';
+printButton.className = 'btn btn-primary mt-3';
+printButton.onclick = printReport;
+document.querySelector('.container').appendChild(printButton);
+
+// Send data to backend on page load
+window.onload = function() {
+    displayResults();
+    sendResultsToBackend();
+};
+
     </script>
 </body>
 </html>
